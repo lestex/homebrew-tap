@@ -8,7 +8,7 @@ cask "agenttray" do
   desc "Agent usage limits in the menu bar"
   homepage "https://github.com/lestex/agenttray"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "AgentTray.app"
 
