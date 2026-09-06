@@ -1,6 +1,6 @@
 cask "agenttray" do
-  version "0.2.0"
-  sha256 "9049ce1d02365d5e206b2502698d32a5fd2e1d51fe64b667ceaa16a73d24e38a"
+  version "0.3.0"
+  sha256 "a67a514d7b742f3e1ac95eb84a1c9a23cbce9a20da2b20582e47f65f07d82be9"
 
   url "https://github.com/lestex/agenttray/releases/download/v#{version}/AgentTray-v#{version}.dmg"
   name "AgentTray"
