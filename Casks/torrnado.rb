@@ -34,9 +34,9 @@ cask "torrnado" do
   binary "torrnado"
   manpage "torrnado.1"
 
-  postflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/torrnado"]
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/torrnado"]
     end
   end
 
