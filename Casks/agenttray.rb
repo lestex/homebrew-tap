@@ -7,9 +7,11 @@ cask "agenttray" do
   desc "Agent usage limits in the menu bar"
   homepage "https://github.com/lestex/agenttray"
 
+  depends_on formula: "python@3.13"
   depends_on macos: :sonoma
 
   app "AgentTray.app"
+  binary "#{appdir}/AgentTray.app/Contents/Resources/atcli"
 
   zap trash: [
     "~/Library/Caches/com.lestex.agenttray",
