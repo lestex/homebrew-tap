@@ -1,4 +1,3 @@
-# rewrites the `version` and `sha256` lines on every tag.
 cask "neoswitcher" do
   version "0.1.0"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
