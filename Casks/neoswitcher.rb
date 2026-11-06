@@ -1,6 +1,6 @@
 cask "neoswitcher" do
-  version "0.1.1"
-  sha256 "72a41aa77e3fd49be7d025f9704b6ea0632c9406fe74f7837410bef1f72cbe65"
+  version "0.1.2"
+  sha256 "0bd0d71042536b9454c0319117c81d11b07814e15ca27fd7fae7b9c95bd7f0ea"
 
   url "https://github.com/lestex/neoswitcher/releases/download/v#{version}/NeoSwitcher-v#{version}.dmg"
   name "NeoSwitcher"
