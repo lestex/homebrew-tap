@@ -8,23 +8,23 @@ class Torrnado < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/lestex/torrnado/releases/download/v0.10.1/torrnado_0.10.1_darwin_arm64.tar.gz"
-      sha256 "30efd88829532afc9d3ad8919920c3e2329da4f3da128cb58edea75b657da66a"
+      url "https://github.com/lestex/torrnado/releases/download/v0.11.0/torrnado_0.11.0_darwin_arm64.tar.gz"
+      sha256 "e0e2723e07bf2b6dd4799d0bca526336fd563e4aecd9131e98322949464ff007"
     end
     on_intel do
-      url "https://github.com/lestex/torrnado/releases/download/v0.10.1/torrnado_0.10.1_darwin_amd64.tar.gz"
-      sha256 "544df322d97e2ae20ef530fafcdadcb4645716736ac4cdff4cda3f18150f9f06"
+      url "https://github.com/lestex/torrnado/releases/download/v0.11.0/torrnado_0.11.0_darwin_amd64.tar.gz"
+      sha256 "f4e30219d7707370012294c0266133fae786dadbaeecf710df5339f251312c89"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/lestex/torrnado/releases/download/v0.10.1/torrnado_0.10.1_linux_arm64.tar.gz"
-      sha256 "ab3eb4215652ad28c6efbeba461ec9f78ca5d8ac403ed51a70a7b733a902e812"
+      url "https://github.com/lestex/torrnado/releases/download/v0.11.0/torrnado_0.11.0_linux_arm64.tar.gz"
+      sha256 "f611febf672d0bd233a29e4af5fad048eeda21f2c48d3f0f0165fa5dfb3a296c"
     end
     on_intel do
-      url "https://github.com/lestex/torrnado/releases/download/v0.10.1/torrnado_0.10.1_linux_amd64.tar.gz"
-      sha256 "a03d322837d5d1389519363633f9d08016b49eff013259d7bb89270c9dbd2a3e"
+      url "https://github.com/lestex/torrnado/releases/download/v0.11.0/torrnado_0.11.0_linux_amd64.tar.gz"
+      sha256 "1747d61eccc39b325fb7d05621c0b37c626428c42f77662bd21c8f11ee373df6"
     end
   end
 
@@ -33,12 +33,40 @@ class Torrnado < Formula
     man1.install "torrnado.1"
   end
 
+  # `brew services start torrnado` runs the daemon at login, so seeding
+  # carries on without a terminal having to ask for it. Optional: the
+  # daemon is also started by any command that needs one.
+  #
+  # Restarted unless it exited cleanly, which is what lets `torrnado stop`
+  # mean stop. "Always" would have launchd bring it straight back, and a
+  # daemon that cannot be stopped is worse than one that has to be started.
+  # A crash, and the library's assertion failures exit non-zero, still get a
+  # fresh one. The same setting is `Restart=on-failure` under systemd.
+  service do
+    run [opt_bin/"torrnado", "daemon"]
+    keep_alive successful_exit: false
+    # A launchd job gets a bare PATH, and the daemon runs the on_complete
+    # hook, the player and the file manager from its own environment - a
+    # hook that names a program from Homebrew would not find it.
+    environment_variables PATH: std_service_path_env
+    # The daemon logs to stderr unless told otherwise, which is what a
+    # service manager wants.
+    log_path var/"log/torrnado.log"
+    error_log_path var/"log/torrnado.log"
+  end
+
   def caveats
     <<~EOS
       torrnado runs a background daemon that outlives the TUI. Run
         torrnado stop
       before `brew uninstall` or `brew upgrade`, or the old daemon keeps
       running from the removed binary.
+
+      To start it at login instead of whenever a command needs it:
+        brew services start torrnado
+      `torrnado stop` ends the daemon for now; `brew services stop torrnado`
+      also keeps it from starting at login. After an upgrade,
+      `brew services restart torrnado` picks up the new build.
 
       Uninstalling leaves your config and the daemon's state in place:
         ~/.config/torrnado
